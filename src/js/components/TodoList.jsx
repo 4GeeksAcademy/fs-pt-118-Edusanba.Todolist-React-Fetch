@@ -118,61 +118,7 @@ const TodoList = ({ username, onBackToUserSelection }) => {
 		}
 	};
 
-	// Función para limpiar todas las tareas
-	const clearAllTodos = () => {
-		if (todos.length === 0) {
-			console.log("No hay tareas para eliminar");
-			return;
-		}
 
-		setLoading(true);
-		console.log("Iniciando eliminación de todas las tareas...");
-		console.log("Tareas a eliminar:", todos);
-		
-		// Crear promesas para eliminar todas las tareas
-		const deletePromises = todos.map(todo => {
-			console.log(`Eliminando tarea con ID: ${todo.id}`);
-			return fetch(`${API_BASE_URL}/todos/${todo.id}`, {
-				method: "DELETE"
-			})
-			.then(resp => {
-				console.log(`Respuesta para tarea ${todo.id}:`, resp.ok, resp.status);
-				if (resp.ok) {
-					console.log(`Tarea ${todo.id} eliminada exitosamente`);
-					return { success: true, id: todo.id };
-				} else {
-					console.error(`Error eliminando tarea ${todo.id}:`, resp.status, resp.statusText);
-					return { success: false, id: todo.id, status: resp.status };
-				}
-			})
-			.catch(error => {
-				console.error(`Error de red eliminando tarea ${todo.id}:`, error);
-				return { success: false, id: todo.id, error };
-			});
-		});
-
-		// Ejecutar todas las eliminaciones en paralelo
-		Promise.all(deletePromises)
-			.then(results => {
-				console.log("Resultados de eliminación:", results);
-				const successful = results.filter(r => r.success).length;
-				const failed = results.filter(r => !r.success).length;
-				console.log(`Eliminadas exitosamente: ${successful}, Fallidas: ${failed}`);
-				
-				// Actualizar la lista independientemente del resultado
-				console.log("Actualizando lista de tareas...");
-				getTodos();
-			})
-			.catch(error => {
-				console.error("Error general eliminando todas las tareas:", error);
-				// Actualizar la lista de todos modos
-				getTodos();
-			})
-			.finally(() => {
-				setLoading(false);
-				console.log("Proceso de eliminación completado");
-			});
-	};
 
 	// Función para manejar el evento de presionar Enter
 	const handleKeyPress = (e) => {
