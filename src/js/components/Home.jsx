@@ -1,10 +1,29 @@
-import React from "react";
+import React, { useState } from "react";
 import TodoList from "./TodoList";
+import UserSelector from "./UserSelector";
 
-//create your first component
 const Home = () => {
+	const [selectedUser, setSelectedUser] = useState(null);
+
+	const handleUserSelect = (username) => {
+		setSelectedUser(username);
+	};
+
+	const handleBackToUserSelection = () => {
+		setSelectedUser(null);
+	};
+
 	return (
-		<TodoList />
+		<div>
+			{selectedUser ? (
+				<TodoList 
+					username={selectedUser} 
+					onBackToUserSelection={handleBackToUserSelection}
+				/>
+			) : (
+				<UserSelector onUserSelect={handleUserSelect} />
+			)}
+		</div>
 	);
 };
 
